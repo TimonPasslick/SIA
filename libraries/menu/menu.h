@@ -41,8 +41,8 @@ namespace menu {
   void sicherheitstraining()  { fehlt(); }
   void spazierenFahren()      { fehlt(); }
   void einparken()            { fehlt(); }
-  void spurgefuehrteLenkung() { fehlt(); }
-
+  
+  void spurgefuehrt()         { fehlt(); }
   void einachs()              { fehlt(); }
   void zweiachs()             { fehlt(); }
   void dackel()               { fehlt(); }
@@ -56,30 +56,30 @@ namespace menu {
 
   //Großgeschrieben: Link auf Menü (bis auf Fahrfiguren, weil es verwirren würde)
   MenuEntry entries[] = {
-    ent("SETTINGS",            enterSettings),
-    ent("Einparken",           einparken),
-    ent("Fahrfiguren",         enterFahrfiguren),
-    ent("Fernsteuerung",       fernsteuerung),
-    ent("Parcours",            sicherheitstraining),
-    ent("Spazieren fahren",    spazierenFahren),
-    ent("Spurgefuehrt",        spurgefuehrteLenkung)
+    ent("SETTINGS",         enterSettings),
+    ent("Einparken",        einparken),
+    ent("Fahrfiguren",      enterFahrfiguren),
+    ent("Fernsteuerung",    fernsteuerung),
+    ent("Parcours",         sicherheitstraining),
+    ent("Spazieren fahren", spazierenFahren)
   };
   MenuEntry settings[] = {
     ent("BACK", menu::enter),
     ent("LENKUNG", enterLenkung)
   };
   MenuEntry lenkung[] = {
-    ent("BACK",     enterSettings),
-    ent("Einachs",  einachs),
-    ent("Zweiachs", zweiachs),
-    ent("Dackel",   dackel),
-    ent("Torkel",   torkel)
+    ent("BACK",         enterSettings),
+    ent("Einachs",      einachs),
+    ent("Zweiachs",     zweiachs),
+    ent("Spurgefuehrt", spurgefuehrt),
+    ent("Dackel",       dackel),
+    ent("Torkel",       torkel)
   };
   MenuEntry fahrfiguren[] = {
     ent("BACK", menu::enter),
-    ent("Nr 1", fahrfigur1),
-    ent("Nr 2", fahrfigur2),
-    ent("Nr 3", fahrfigur3)
+    ent("Ellipse", fahrfigur1),
+    ent("Acht", fahrfigur2),
+    ent("Wende", fahrfigur3)
   };
 
   void switchToEntry(const size_t index) {
