@@ -23,21 +23,30 @@ namespace menu {
 	
 	//Abkürzung
 	MenuEntry ent(String name, void (*onClick)()) { return MenuEntry(name, onClick); }
+  
+  void fehlt() {
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("SIA G1");
+    lcd.setCursor(0,1);
+    lcd.print("fehlt noch");
+    delay(1500);
+  }
 	
 	/////////////////////////////////zu implementieren/////////////////////////////////
-	void fernsteuerung() {}
-	void fahrfigur1() {}
-	void fahrfigur2() {}
-	void fahrfigur3() {}
-	void sicherheitstraining() {}
-	void spazierenFahren() {}
-	void einparken() {}
-	void spurgefuehrteLenkung() {}
+	void fernsteuerung()        { fehlt(); }
+	void fahrfigur1()           { fehlt(); }
+	void fahrfigur2()           { fehlt(); }
+	void fahrfigur3()           { fehlt(); }
+	void sicherheitstraining()  { fehlt(); }
+	void spazierenFahren()      { fehlt(); }
+	void einparken()            { fehlt(); }
+	void spurgefuehrteLenkung() { fehlt(); }
 	
-	void einachs() {}
-	void zweiachs() {}
-	void dackel() {}
-	void torkel() {}
+	void einachs()              { fehlt(); }
+	void zweiachs()             { fehlt(); }
+	void dackel()               { fehlt(); }
+	void torkel()               { fehlt(); }
 	//////////////////////////////////////bis hier//////////////////////////////////////
 	
 	void enter();
