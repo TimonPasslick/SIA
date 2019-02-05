@@ -1,0 +1,16 @@
+Hier erstellen wir ein Unterprogramm für die Fernsteuerung, das absolut gar nichts macht.
+
+Ihr müsst zuerst so einen namespace machen:
+namespace fernsteuerung {
+  void _setup() {
+  }
+
+  bool _loop() {
+    return false; //bricht sofort ab
+  }
+}
+
+Und dann müsst ihr in "menu.h" bei "void _fernsteuerung" "fehlt();" ersetzen:
+void _fernsteuerung()        { MOD_ENTER(fernsteuerung) }
+
+Und das war's (schon).
