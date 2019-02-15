@@ -18,7 +18,12 @@ DistanceGP2Y0A21YK  distanceSensors[4];
 radio_receiver controllerSignalReceiver;
 
 
-constexpr int motorSpeedStop = 75;
+constexpr int
+  steerSignalMultiplier = 2,
+  speedSignalMultiplier = 2,
+  speedSignalMax = 85,
+  motorSpeedStop = 75,
+  minDistanceCm = 15;
 
 
 void setup() {
@@ -47,18 +52,18 @@ void loop() {
   {
     const int steerSignal =  controllerSignalReceiver.AverageChannel(1) - RADIO_RECEIVER_NULL_CH_1;
 
-    frontAxis.write(90 - 2 * steerSignal);
-    rearAxis .write(90 + 2 * steerSignal);
+    frontAxis.write(90 - steerSignalMultiplier * steerSignal);
+    rearAxis .write(90 + steerSignalMultiplier * steerSignal);
   }
 
   // SPEED
   {
     int speedSignal = controllerSignalReceiver.AverageChannel(2) - RADIO_RECEIVER_NULL_CH_2;
 
-    if (speedSignal > 90)
-      speedSignal = 80;
+    if (speedSignal > speedSignalMax)
+      speedSignal = speedSignalMax;
 
-    int motorSpeed = (2 * speedSignal) + 90;
+    int motorSpeed = (speedSignalMultiplier * speedSignal) + motorSpeedStop;
 
     { // stop check
       static int prevSpeedSignal = 0;
@@ -69,7 +74,7 @@ void loop() {
       bool sensorsTooClose = false;
       for (auto& sensor : distanceSensors) {
         const int distance = sensor.getDistanceCentimeter();
-        if (distance >= 0 and distance < 15)
+        if (distance >= 0 and distance < minDistanceCm)
           sensorsTooClose = true;
       }
 
