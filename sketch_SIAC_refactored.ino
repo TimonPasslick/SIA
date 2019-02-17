@@ -55,6 +55,23 @@ void loop() {
     delay(loopTime - used);
 }
 
+int channel(const uint8_t number) {
+  constexpr int nullChannels[10] {
+    RADIO_RECEIVER_NULL_CH_0,
+    RADIO_RECEIVER_NULL_CH_1,
+    RADIO_RECEIVER_NULL_CH_2,
+    RADIO_RECEIVER_NULL_CH_3,
+    RADIO_RECEIVER_NULL_CH_4,
+    RADIO_RECEIVER_NULL_CH_5,
+    RADIO_RECEIVER_NULL_CH_6,
+    RADIO_RECEIVER_NULL_CH_7,
+    RADIO_RECEIVER_NULL_CH_8,
+    RADIO_RECEIVER_NULL_CH_9,
+  };
+
+  return controllerSignalReceiver.AverageChannel(number) - nullChannels[number];
+}
+
 int limit(int value, const int maxPossible, const int maxAllowed) {
   value = map(value, 0, maxPossible, 0, maxAllowed);
 
@@ -70,20 +87,23 @@ void loop25Hz() {
 
   //STEER
   {
-    int steerSignal = controllerSignalReceiver.AverageChannel(1) - RADIO_RECEIVER_NULL_CH_1;
-
-    steerSignal = limit(steerSignal, steerSignalMaxPossible, steerSignalMaxAllowed);
+    int steerAngle = limit(channel(1), steerSignalMaxPossible, steerSignalMaxAllowed);
 
     if (off)
-      steerSignal = 0;
+      steerAngle = 0;
 
-    frontAxis.write(90 - steerSignal);
-    rearAxis .write(90 + steerSignal);
+    frontAxis.write(90 - steerAngle);
+
+    //if switch at left top of controller is on, don't steer with rear axis
+    if (channel(5) - 100 < 100 / 2)
+      steerAngle = 0;
+
+    rearAxis.write(90 + steerAngle);
   }
 
   //SPEED
   {
-    int speedSignal = controllerSignalReceiver.AverageChannel(2) - RADIO_RECEIVER_NULL_CH_2;
+    int speedSignal = channel(2);
 
     speedSignal = -speedSignal; //controller or servo is strange
 
