@@ -10,7 +10,8 @@ namespace fernsteuerung {
   }
 }
 
-Und dann müsst ihr in "menu.h" bei "void _fernsteuerung" "fehlt();" ersetzen:
+Und dann müsst ihr in "menu.h" eure Datei per #include einbinden
+- und bei "void _fernsteuerung" "fehlt();" ersetzen:
 void _fernsteuerung()        { MOD_ENTER(fernsteuerung) }
 
 Und das war's (schon).
