@@ -17,18 +17,17 @@ radio_receiver controllerSignalReceiver;
 /////////NEEDS SOME FINETUNING/////////
 constexpr int
 steerSignalMaxPossible = 50,
-steerSignalMaxAllowed = 20;
-
-
-constexpr int
-speedSignalMinPossible = -50,
-speedSignalMinAllowed = -50,
+maxSteerAngle = 20,
 
 speedSignalMaxPossible = 50,
 speedSignalMaxAllowed = 50,
 
 stopSpeed = 75;
 ///////////////////////////////////////
+
+constexpr int
+maxForwardSpeedKmH = 6,
+maxBackwardSpeedKmH = 2;
 
 
 void setup() {
@@ -87,7 +86,7 @@ void loop25Hz() {
 
   //STEER
   {
-    int steerAngle = limit(channel(1), steerSignalMaxPossible, steerSignalMaxAllowed);
+    int steerAngle = limit(channel(1), steerSignalMaxPossible, maxSteerAngle);
 
     if (off)
       steerAngle = 0;
@@ -109,9 +108,12 @@ void loop25Hz() {
 
     if (speedSignal > 0)
       speedSignal = limit(speedSignal, speedSignalMaxPossible, speedSignalMaxAllowed);
-    if (speedSignal < 0)
-      speedSignal = -limit(-speedSignal, -speedSignalMinPossible, -speedSignalMinAllowed);
-
+    if (speedSignal < 0) {
+      const auto scale = [](const int value) {
+        return (value * maxForwardSpeedKmH) / maxBackwardSpeedKmH;
+      };
+      speedSignal = -limit(-speedSignal, -scale(speedSignalMaxPossible), -scale(speedSignalMaxAllowed));
+    }
     { //stop check
       static int prevSpeedSignal = 0;
 
