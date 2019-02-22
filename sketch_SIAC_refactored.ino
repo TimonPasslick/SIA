@@ -16,13 +16,13 @@ radio_receiver controllerSignalReceiver;
 
 /////////NEEDS SOME FINETUNING/////////
 constexpr int
-steerSignalMaxPossible = 50,
+steerSignalMaxPossible = 100,
 maxSteerAngle = 20,
 
-speedSignalMaxPossible = 50,
-speedSignalMaxAllowed = 50,
+speedSignalMaxPossible = 100,
+speedSignalMaxAllowed = 35,
 
-stopSpeed = 75;
+stopSpeed = 100;
 ///////////////////////////////////////
 
 constexpr int
@@ -91,29 +91,30 @@ void loop25Hz() {
     if (off)
       steerAngle = 0;
 
-    frontAxis.write(90 - steerAngle);
+    rearAxis.write(90 - steerAngle);
 
     //if switch at left top of controller is on, don't steer with rear axis
-    if (channel(5) - 100 < 100 / 2)
+    if (channel(5) < 100 / 2)
       steerAngle = 0;
 
-    rearAxis.write(90 + steerAngle);
+    frontAxis.write(90 + steerAngle);
   }
 
   //SPEED
   {
     int speedSignal = channel(2);
 
-    speedSignal = -speedSignal; //controller or servo is strange
-
     if (speedSignal > 0)
       speedSignal = limit(speedSignal, speedSignalMaxPossible, speedSignalMaxAllowed);
     if (speedSignal < 0) {
       const auto scale = [](const int value) {
-        return (value * maxForwardSpeedKmH) / maxBackwardSpeedKmH;
+        return (value * maxBackwardSpeedKmH) / maxForwardSpeedKmH;
       };
-      speedSignal = -limit(-speedSignal, -scale(speedSignalMaxPossible), -scale(speedSignalMaxAllowed));
+      speedSignal = -limit(-speedSignal, speedSignalMaxPossible, scale(speedSignalMaxAllowed));
     }
+
+    speedSignal = -speedSignal;
+    
     { //stop check
       static int prevSpeedSignal = 0;
 
