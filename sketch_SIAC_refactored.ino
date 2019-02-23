@@ -14,20 +14,13 @@ Servo frontAxis, rearAxis;
 
 radio_receiver controllerSignalReceiver;
 
+
 /////////NEEDS SOME FINETUNING/////////
 constexpr int
-steerSignalMaxPossible = 100,
-maxSteerAngle = 20,
-
-speedSignalMaxPossible = 100,
-speedSignalMaxAllowed = 35,
-
-stopSpeed = 100;
+maxSpeed = 35,
+stopSpeed = 100,
+switchTimeMs = 100;
 ///////////////////////////////////////
-
-constexpr int
-maxForwardSpeedKmH = 6,
-maxBackwardSpeedKmH = 2;
 
 
 void setup() {
@@ -36,22 +29,6 @@ void setup() {
   rearAxis .attach(SERVO_ONE_OUT);
 
   controllerSignalReceiver.init();
-}
-
-//Running the loop only 25 times a second is responsive enough and saves battery.
-void loop25Hz();
-
-void loop() {
-  constexpr int loopTime = 1000 / 25;
-
-  const auto start = millis();
-
-  loop25Hz();
-
-  const auto used = millis() - start;
-
-  if (used < loopTime)
-    delay(loopTime - used);
 }
 
 int channel(const uint8_t number) {
@@ -71,22 +48,21 @@ int channel(const uint8_t number) {
   return controllerSignalReceiver.AverageChannel(number) - nullChannels[number];
 }
 
-int limit(int value, const int maxPossible, const int maxAllowed) {
-  value = map(value, 0, maxPossible, 0, maxAllowed);
-
-  if (value > maxAllowed)
-    value = maxAllowed;
-
-  return value;
+int limitChannel(const uint8_t number, const int maxAllowed) {
+  return map(
+           channel(number),
+           0, 100,
+           0, maxAllowed
+         );
 }
 
-void loop25Hz() {
+void loop() {
   //channel number is arbitrary choice: all channels are 0 if controller is switched of
-  const bool off = controllerSignalReceiver.AverageChannel(0) < 20;
+  const bool off = controllerSignalReceiver.AverageChannel(0) < 15;
 
   //STEER
   {
-    int steerAngle = limit(channel(1), steerSignalMaxPossible, maxSteerAngle);
+    int steerAngle = limitChannel(1, 20);
 
     if (off)
       steerAngle = 0;
@@ -102,31 +78,27 @@ void loop25Hz() {
 
   //SPEED
   {
-    int speedSignal = channel(2);
+    int motorSpeed = limitChannel(2, maxSpeed);
 
-    if (speedSignal > 0)
-      speedSignal = limit(speedSignal, speedSignalMaxPossible, speedSignalMaxAllowed);
-    if (speedSignal < 0) {
-      const auto scale = [](const int value) {
-        return (value * maxBackwardSpeedKmH) / maxForwardSpeedKmH;
-      };
-      speedSignal = -limit(-speedSignal, speedSignalMaxPossible, scale(speedSignalMaxAllowed));
+    if (motorSpeed < 0) {
+      motorSpeed /= 3; //6kmh/2kmh
     }
 
-    speedSignal = -speedSignal;
-    
-    { //stop check
-      static int prevSpeedSignal = 0;
+    //servo is strange
+    motorSpeed = -motorSpeed;
 
-      const bool switchingDirection = (prevSpeedSignal > 0 and speedSignal < 0) or
-                                      (prevSpeedSignal < 0 and speedSignal > 0);
+    static int prevSpeed = 0;
 
-      if (switchingDirection or off)
-        speedSignal = 0;
+    const bool switchingDirection = (prevSpeed > 0 and motorSpeed < 0) or
+                                    (prevSpeed < 0 and motorSpeed > 0);
 
-      prevSpeedSignal = speedSignal;
-    } //stop check end
+    if (switchingDirection or off)
+      motorSpeed = 0;
 
-    motor.write(speedSignal + stopSpeed);
+    motor.write(motorSpeed + stopSpeed);
+
+    //steering not possible while switching direction but switchTimeMs should be small
+    if (switchingDirection)
+      delay(switchTimeMs);
   }
 }
