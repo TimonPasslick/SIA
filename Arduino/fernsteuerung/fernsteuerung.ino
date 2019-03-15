@@ -17,8 +17,8 @@ radio_receiver controllerSignalReceiver;
 
 /////////NEEDS SOME FINETUNING/////////
 constexpr int
-maxSpeed = 35,
-stopSpeed = 100,
+maxSpeed = 13,
+stopSpeed = 90,
 switchTimeMs = 100;
 ///////////////////////////////////////
 
