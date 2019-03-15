@@ -49,15 +49,18 @@ int channel(const uint8_t number) {
 }
 
 int limitChannel(const uint8_t number, const int maxAllowed) {
-  return map(
-           channel(number),
-           0, 100,
-           0, maxAllowed
+  return min(
+           maxAllowed,
+           map(
+             channel(number),
+             0, 100,
+             0, maxAllowed
+           )
          );
 }
 
 void loop() {
-  //channel number is arbitrary choice: all channels are 0 if controller is switched of
+  //channel number is arbitrary choice: all channels are 0 if controller is switched off
   const bool off = controllerSignalReceiver.AverageChannel(0) < 15;
 
   //STEER
