@@ -1,0 +1,8 @@
+[package]
+name = "bmp2led"
+version = "0.1.0"
+authors = ["Timon Paßlick <timon.passlick@gmx.de>"]
+edition = "2018"
+
+[dependencies]
+bmp = "0.4.0"

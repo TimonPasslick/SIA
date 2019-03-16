@@ -1,0 +1,7 @@
+cmd oder PowerShell starten
+
+.\bmp2led irgendein-Name.bmp
+.\bmp2led "C:\irgendein auseinander geschriebener Name.bmp"
+.\bmp2led irgendein-Name.bmp > Ausgabe.txt
+
+Wenn "bmp2led.exe" woanders liegt, Pfad entsprechend ändern
