@@ -4,24 +4,24 @@ Adafruit_NeoPixel
 blinkerLinks{
   3, //Anzahl
   4, //Pin
-  NEO_RGB
+  NEO_GRB
 },
 blinkerRechts{3, 8, NEO_RGB};
 
-void setup() {
-  blinkerLinks .begin();
-  blinkerRechts.begin();
+#define BLINKER(methodenAufruf) blinkerLinks. methodenAufruf ; blinkerRechts. methodenAufruf ;
 
-  blinkerLinks .show();
-  blinkerRechts.show();
+void setup() {
+  BLINKER(begin())
 }
 
 void loop() {
   for (int i = 0; i < 3; ++i) {
-    delay(500);
-    blinkerLinks .setPixelColor(i, 0x40, 0xFF, 0x40);
-    blinkerRechts.setPixelColor(i, 0x40, 0xFF, 0x40);
+    BLINKER(setBrightness(0x30))
+    BLINKER(setPixelColor(i, 0xF0, 0x20, 0x10))
+    BLINKER(show())
+    delay(200);
   }
-  blinkerLinks .fill(0x00);
-  blinkerRechts.fill(0x00);
+  BLINKER(fill(0x00))
+  BLINKER(show())
+  delay(300);
 }
