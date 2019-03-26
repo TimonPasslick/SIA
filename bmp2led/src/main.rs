@@ -1,4 +1,3 @@
-use bmp::Pixel;
 use std::{
     env,
     io::{stdout, Write},
@@ -29,13 +28,16 @@ Die Farbe dieser Abstand-Pixel ist egal."
         exit(0);
     }
 
-    let states: Vec<Vec<Pixel>> = (0..=img.get_width() / 6)
+    let states: Vec<Vec<u8>> = (0..=img.get_width() / 6)
         .map(|state_index| {
             (state_index * 6..state_index * 6 + 5)
                 .flat_map(|width_index| {
                     (0..8)
                         .map(move |height_index| (width_index, height_index))
-                        .map(|(x, y)| img.get_pixel(x, y))
+                        .flat_map(|(x, y)| {
+                            let pixel = img.get_pixel(x, y);
+                            [pixel.r, pixel.g, pixel.b].iter().cloned().collect::<Vec<_>>().into_iter()
+                        })
                 })
                 .collect()
         })
@@ -59,13 +61,14 @@ Die Farbe dieser Abstand-Pixel ist egal."
     exit(0);
 }
 
-fn print_state(state: &Vec<Pixel>) {
+fn print_state(state: &Vec<u8>) {
     print!("{{");
-    for (i, pixel) in state.iter().enumerate() {
-        print!("pix{{{},{},{}}}", pixel.r, pixel.g, pixel.b);
+    for (i, rgb) in state.iter().enumerate() {
+        print!("{:#04X}", rgb);
         if i != state.len() - 1 {
             print!(",");
         }
     }
     print!("}}");
 }
+
