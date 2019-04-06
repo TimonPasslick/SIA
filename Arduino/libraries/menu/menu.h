@@ -1,10 +1,12 @@
 #ifndef MENU_H
 #define MENU_H
 
-//#include "..\sdk\sim\lib\arduino_sim\LiquidCrystal.h"
+#include "fernsteuerung.h"
+#include "warnbake_mega.h"
+
 #include "LiquidCrystal.h"
 
-const int rs = 31, en = 30, d4 = 29, d5 = 28, d6 = 27, d7 = 26;
+constexpr int rs = 31, en = 30, d4 = 29, d5 = 28, d6 = 27, d7 = 26;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 namespace menu {
@@ -14,15 +16,13 @@ namespace menu {
   struct MenuEntry {
     String name;
     Function onClick;
-    
-    MenuEntry(String Name, void (*OnClick)()) { name = Name; onClick = OnClick; }
   };
 
   MenuEntry* curMenu; size_t curMenuSize;
   size_t curIndex;
 
   //Abkürzung
-  MenuEntry ent(String name, void (*onClick)()) { return MenuEntry(name, onClick); }
+  MenuEntry ent(String name, Function onClick) { return MenuEntry{name, onClick}; }
 
   void fehlt() {
     lcd.clear();
@@ -32,9 +32,11 @@ namespace menu {
     lcd.print("fehlt noch");
     delay(1500);
   }
+  
+#define MOD_ENTER(mod) { lcd.clear(); mod::_setup(); while (mod::_loop()) { } }
 
   /////////////////////////////////zu implementieren/////////////////////////////////
-  void _fernsteuerung()        { fehlt(); }
+  void _fernsteuerung()        { MOD_ENTER(fernsteuerung) }
   void _fahrfigur1()           { fehlt(); }
   void _fahrfigur2()           { fehlt(); }
   void _fahrfigur3()           { fehlt(); }
@@ -48,13 +50,12 @@ namespace menu {
   void _dackel()               { fehlt(); }
   void _torkel()               { fehlt(); }
   //////////////////////////////////////bis hier//////////////////////////////////////
-  
-#define MOD_ENTER(mod) { mod::_setup(); while (mod::_loop()) { } }
 
   void enter();
   void enterSettings();
   void enterLenkung();
   void enterFahrfiguren();
+  void enterAnimation();
 
   //Großgeschrieben: Link auf Menü (bis auf Fahrfiguren, weil es verwirren würde)
   MenuEntry entries[] = {
@@ -66,8 +67,18 @@ namespace menu {
     ent("Spazieren fahren", _spazierenFahren)
   };
   MenuEntry settings[] = {
-    ent("BACK", menu::enter),
-    ent("LENKUNG", enterLenkung)
+    ent("BACK",      menu::enter),
+    ent("ANIMATION", enterAnimation),
+    ent("LENKUNG",   enterLenkung)
+  };
+  MenuEntry animation[] = {
+    ent("BACK",         enterSettings),
+    ent("keine",        warnbake::aus),
+    ent("Wand",         warnbake::wand),
+    ent("Pfeil links",  warnbake::pfeilLinks),
+    ent("Pfeil rechts", warnbake::pfeilRechts),
+    ent("Blinker blau", warnbake::blinkerBlau),
+    ent("Blinker gelb", warnbake::blinkerGelb),
   };
   MenuEntry lenkung[] = {
     ent("BACK",         enterSettings),
@@ -88,13 +99,13 @@ namespace menu {
     lcd.clear();
     lcd.setCursor(0,0);
     if (curMenu == &menu::entries[0]) {
-      lcd.print("SIA G1      MENU");
+      lcd.print("MENU      SIA G1");
     } else if (curMenu == &settings[0]) {
-      lcd.print("SIA G1  SETTINGS");
+      lcd.print("SETTINGS  SIA G1");
     } else if (curMenu == &lenkung[0]) {
-      lcd.print("SIA G1   LENKUNG");
+      lcd.print("LENKUNG   SIA G1");
     } else if (curMenu == &fahrfiguren[0]) {
-      lcd.print("SIA G1   FIGUREN");
+      lcd.print("FIGUREN   SIA G1");
     }
     lcd.setCursor(0,1);
     lcd.print(curMenu[index].name);
@@ -119,6 +130,9 @@ namespace menu {
   }
   void enterFahrfiguren() {
     switchToMenu(fahrfiguren);
+  }
+  void enterAnimation() {
+    switchToMenu(animation);
   }
 
   void up() {
