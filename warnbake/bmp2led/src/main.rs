@@ -62,13 +62,11 @@ Die Farbe dieser Abstand-Pixel ist egal."
 }
 
 fn print_state(state: &Vec<u8>) {
-    print!("{{");
     for (i, rgb) in state.iter().enumerate() {
         print!("{:#04X}", rgb);
         if i != state.len() - 1 {
             print!(",");
         }
     }
-    print!("}}");
 }
 

@@ -1,0 +1,5 @@
+Weißer Scheinwerfer
+orangener Blinker
+blauer Blinker
+gelber Pfeil links
+gelber Pfeil recht

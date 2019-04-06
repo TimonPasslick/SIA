@@ -1,0 +1,4 @@
+Eine Animation ist eine Sequenz von N Bildern.
+Ein  Bild      ist eine Sequenz von 5 Spalten, von links nach rechts.
+Eine Spalte    ist eine Sequenz von 8 Pixeln,  von oben nach unten.
+Ein  Pixel     ist eine Sequenz von 3 Bytes,   im RGB-Format.
