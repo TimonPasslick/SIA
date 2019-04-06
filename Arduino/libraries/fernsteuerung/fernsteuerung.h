@@ -14,6 +14,7 @@ Servo frontAxis, rearAxis;
 
 radio_receiver controllerSignalReceiver;
 
+namespace fernsteuerung {
 
 /////////NEEDS SOME FINETUNING/////////
 constexpr int
@@ -23,10 +24,9 @@ switchTimeMs = 100;
 ///////////////////////////////////////
 
 
-void setup() {
+void _setup() {
   motor    .attach(SERVO_MC_ONE_OUT);
   frontAxis.attach(SERVO_TWO_OUT);
-  rearAxis .attach(SERVO_ONE_OUT);
 
   controllerSignalReceiver.init();
 }
@@ -59,7 +59,7 @@ int limitChannel(const uint8_t number, const int maxAllowed) {
          );
 }
 
-void loop() {
+bool _loop() {
   //channel number is arbitrary choice: all channels are 0 if controller is switched off
   const bool off = controllerSignalReceiver.AverageChannel(0) < 15;
 
@@ -70,13 +70,13 @@ void loop() {
     if (off)
       steerAngle = 0;
 
-    rearAxis.write(90 - steerAngle);
+    frontAxis.write(90 - steerAngle);
 
-    //if switch at left top of controller is on, don't steer with rear axis
+    //if switch at left top of controller is off, don't steer with rear axis
     if (channel(5) < 100 / 2)
       steerAngle = 0;
 
-    frontAxis.write(90 + steerAngle);
+    rearAxis.write(90 + steerAngle);
   }
 
   //SPEED
@@ -97,6 +97,8 @@ void loop() {
 
     if (switchingDirection or off)
       motorSpeed = 0;
+    
+    prevSpeed = motorSpeed;
 
     motor.write(motorSpeed + stopSpeed);
 
@@ -104,4 +106,6 @@ void loop() {
     if (switchingDirection)
       delay(switchTimeMs);
   }
+  return true; //Abbruch im Moment nicht möglich
+}
 }
