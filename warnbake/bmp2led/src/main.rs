@@ -28,9 +28,9 @@ Die Farbe dieser Abstand-Pixel ist egal."
         exit(0);
     }
 
-    let states: Vec<Vec<u8>> = (0..=img.get_width() / 6)
-        .map(|state_index| {
-            (state_index * 6..state_index * 6 + 5)
+    let bytes: Vec<u8> = (0..=img.get_width() / 6)
+        .flat_map(|state_index| {
+            (state_index * 6..state_index * 6 + 5).rev()
                 .flat_map(|width_index| {
                     (0..8)
                         .map(move |height_index| (width_index, height_index))
@@ -39,34 +39,16 @@ Die Farbe dieser Abstand-Pixel ist egal."
                             [pixel.r, pixel.g, pixel.b].iter().cloned().collect::<Vec<_>>().into_iter()
                         })
                 })
-                .collect()
         })
         .collect();
 
-    if states.len() == 1 {
-        print_state(&states.into_iter().next().unwrap());
-        stdout().flush().unwrap();
-        exit(0);
-    }
-
     print!("{{");
-    for (i, state) in states.iter().enumerate() {
-        print_state(state);
-        if i != states.len() - 1 {
+    for (i, rgb) in bytes.iter().enumerate() {
+        print!("{:#04X}", rgb);
+        if i != bytes.len() - 1 {
             print!(",");
         }
     }
     print!("}}");
     stdout().flush().unwrap();
-    exit(0);
 }
-
-fn print_state(state: &Vec<u8>) {
-    for (i, rgb) in state.iter().enumerate() {
-        print!("{:#04X}", rgb);
-        if i != state.len() - 1 {
-            print!(",");
-        }
-    }
-}
-
