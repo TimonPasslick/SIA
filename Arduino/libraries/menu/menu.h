@@ -79,6 +79,9 @@ namespace menu {
     ent("Pfeil rechts", warnbake::pfeilRechts),
     ent("Blinker blau", warnbake::blinkerBlau),
     ent("Blinker gelb", warnbake::blinkerGelb),
+    ent("Mann gruen",   warnbake::mannGruen),
+    ent("Mann rot",     warnbake::mannRot),
+    ent("Ampel",        warnbake::ampel)
   };
   MenuEntry lenkung[] = {
     ent("BACK",         enterSettings),

@@ -26,5 +26,14 @@ void blinkerBlau() {
 void blinkerGelb() {
   sendeCodeNummer(5);
 }
+void mannGruen() {
+  sendeCodeNummer(6);
+}
+void mannRot() {
+  sendeCodeNummer(7);
+}
+void ampel() {
+  sendeCodeNummer(8);
+}
 
 }

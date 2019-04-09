@@ -28,7 +28,7 @@ void switchToAnim(const uint8_t (&anim)[N]) {
 }
 
 void setup() {
-  Wire.begin(0);
+  Wire.begin(0); //Mega sollte sich mit Slave-Adresse 0 verbinden.
   strip.begin();
   strip.setBrightness(0x30);
 }
