@@ -34,7 +34,7 @@ void setup() {
 }
 
 void loop() {
-  //auf neue Animationswechsel pruefen
+  //auf Animationswechsel pruefen
   if (Wire.available())
   {
     switch (Wire.read())
@@ -65,6 +65,9 @@ void loop() {
         break;
       case 8:
         switchToAnim(ampel);
+        break;
+      case 0xFF:
+        //benutzerdefinierte Animation vom Smartphone
         break;
     }
   }

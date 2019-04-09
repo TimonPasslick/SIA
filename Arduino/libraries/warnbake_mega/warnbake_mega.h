@@ -35,5 +35,9 @@ void mannRot() {
 void ampel() {
   sendeCodeNummer(8);
 }
+void benutzerdefiniert() {
+  sendeCodeNummer(0xFF);
+  //leite Animationsdaten von App an Uno weiter
+}
 
 }
