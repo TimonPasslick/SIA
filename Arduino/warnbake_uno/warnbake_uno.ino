@@ -1,5 +1,6 @@
 #include "Adafruit_NeoPixel.h"
-#include "Wire.h"
+#include <Wire.h>
+#include <EEPROM.h>
 
 Adafruit_NeoPixel strip{
   40,
@@ -30,6 +31,37 @@ void switchToAnim(const byte (&anim)[N]) {
   animLength = N / (40 * 3);
   picIdx = 0;
 }
+
+template <typename T>
+void loadAnimFromReader(T&& reader) {
+  animLength = size_t(reader.nextByte()) << 8 + reader.nextByte();
+  size_t byteLength = animLength * 40 * 3;
+  animPtr = new byte[byteLength];
+  animPtrRegion = RAM;
+  for (size_t idx = 0; idx < byteLength; ++idx)
+    animPtr[idx] = reader.nextByte();
+}
+
+struct MegaReader {
+  unsigned int flashIdx;
+  MegaReader() : flashIdx{0} { }
+  byte nextByte() {
+    byte result = Wire.read();
+    EEPROM.update(flashIdx, result);
+    ++flashIdx;
+    return result;
+  }
+};
+
+struct FlashReader {
+  unsigned int idx;
+  FlashReader() : idx{0} { }
+  byte nextByte() {
+    byte result = EEPROM.read(idx);
+    ++idx;
+    return result;
+  }
+};
 
 void setup() {
   Wire.begin(0); //Mega sollte sich mit Slave-Adresse 0 verbinden.
@@ -70,17 +102,16 @@ void loop() {
       case 8:
         switchToAnim(ampel);
         break;
+      case 0xFE:
+        //benutzerdefinierte Animation vom EEPROM einlesen
+        loadAnimFromReader(FlashReader());
+        break;
       case 0xFF:
         //erstmal LEDs ausschalten, würden sonst im Bild stehen bleiben
         strip.fill(0x00);
         strip.show();
         //benutzerdefinierte Animation vom Smartphone einlesen
-        animLength = size_t(Wire.read()) << 8 + Wire.read();
-        size_t byteLength = animLength * 40 * 3;
-        animPtr = new byte[byteLength];
-        animPtrRegion = RAM;
-        for (size_t idx = 0; idx < byteLength; ++idx)
-          animPtr[idx] = Wire.read();
+        loadAnimFromReader(MegaReader());
         break;
     }
   }
