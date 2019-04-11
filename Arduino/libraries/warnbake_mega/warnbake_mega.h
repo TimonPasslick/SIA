@@ -1,3 +1,4 @@
+#include "HC05.h"
 #include <Wire.h>
 
 namespace warnbake {
@@ -35,7 +36,11 @@ void mannRot() {
 void ampel() {
   sendeCodeNummer(8);
 }
+
 void benutzerdefiniert() {
+  sendeCodeNummer(0xFE);
+}
+void benutzerdefiniertNeu() {
   sendeCodeNummer(0xFF);
   //leite Animationsdaten von App an Uno weiter
 }
