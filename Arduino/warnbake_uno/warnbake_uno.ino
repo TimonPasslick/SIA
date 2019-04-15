@@ -22,6 +22,12 @@ enum {ProgMem, RAM} animPtrRegion;
 size_t animLength;
 size_t picIdx;
 
+void noAnim() {
+  if (animPtrRegion == RAM)
+    delete[] animPtr;
+  animPtr = nullptr;
+}
+
 template <size_t N>
 void switchToAnim(const byte (&anim)[N]) {
   if (animPtrRegion == RAM)
@@ -35,6 +41,10 @@ void switchToAnim(const byte (&anim)[N]) {
 template <typename T>
 void loadAnimFromReader(T&& reader) {
   animLength = size_t(reader.nextByte()) << 8 + reader.nextByte();
+  if (animLength == 0 || animLength == 0xFFFF) {
+    noAnim();
+    return;
+  }
   size_t byteLength = animLength * 40 * 3;
   animPtr = new byte[byteLength];
   animPtrRegion = RAM;
@@ -63,20 +73,14 @@ struct FlashReader {
   }
 };
 
-void setup() {
-  Wire.begin(0); //Mega sollte sich mit Slave-Adresse 0 verbinden.
-  strip.begin();
-  strip.setBrightness(0x30);
-}
-
-void loop() {
-  //auf Animationswechsel pruefen
-  if (Wire.available())
+void receiveEvent(int) {
+  if (Wire.available() > 0)
   {
+    Serial.println("Uno: Signal verfügbar");
     switch (Wire.read())
     {
       case 0:
-        animPtr = nullptr;
+        noAnim();
         break;
       case 1:
         switchToAnim(wand);
@@ -115,7 +119,20 @@ void loop() {
         break;
     }
   }
-  //aktuelles Bild auf strip darstellen
+}
+
+void setup() {
+  Wire.begin(8); //Mega sollte sich mit Slave-Adresse 8 verbinden.
+  Wire.onReceive(receiveEvent);
+  Serial.begin(9600);
+  strip.begin();
+  strip.setBrightness(0x30);
+  switchToAnim(wand);
+  delay(500);
+  Serial.println("Uno: Setup beendet");
+}
+
+void loop() {
   if (animPtr == nullptr)
     strip.fill(0x00);
   else {

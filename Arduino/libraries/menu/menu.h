@@ -81,7 +81,8 @@ namespace menu {
     ent("Blinker gelb", warnbake::blinkerGelb),
     ent("Mann gruen",   warnbake::mannGruen),
     ent("Mann rot",     warnbake::mannRot),
-    ent("Ampel",        warnbake::ampel)
+    ent("Ampel",        warnbake::ampel),
+    ent("aus der App",  warnbake::benutzerdefiniert),
   };
   MenuEntry lenkung[] = {
     ent("BACK",         enterSettings),
@@ -136,6 +137,80 @@ namespace menu {
   }
   void enterAnimation() {
     switchToMenu(animation);
+  }
+  
+  void smartphoneSignal(byte signal) {
+    switch (signal) {
+      case 0:
+        warnbake::aus();
+        break;
+      case 1:
+        warnbake::wand();
+        break;
+      case 2:
+        warnbake::pfeilLinks();
+        break;
+      case 3:
+        warnbake::pfeilRechts();
+        break;
+      case 4:
+        warnbake::blinkerBlau();
+        break;
+      case 5:
+        warnbake::blinkerGelb();
+        break;
+      case 6:
+        warnbake::mannGruen();
+        break;
+      case 7:
+        warnbake::mannRot();
+        break;
+      case 8:
+        warnbake::ampel();
+        break;
+      case 9:
+        warnbake::benutzerdefiniert();
+        break;
+      case 10:
+        _einachs();
+        break;
+      case 11:
+        _zweiachs();
+        break;
+      case 12:
+        _spurgefuehrt();
+        break;
+      case 13:
+        _dackel();
+        break;
+      case 14:
+        _torkel();
+        break;
+      case 15:
+        _einparken();
+        break;
+      case 16:
+        _fahrfigur1();
+        break;
+      case 17:
+        _fahrfigur2();
+        break;
+      case 18:
+        _fahrfigur3();
+        break;
+      case 19:
+        _fernsteuerung();
+        break;
+      case 20:
+        _sicherheitstraining();
+        break;
+      case 21:
+        _spazierenFahren();
+        break;
+      case 0xFF:
+        warnbake::benutzerdefiniertNeu();
+        break;
+    }
   }
 
   void up() {
