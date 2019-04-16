@@ -145,9 +145,9 @@ void loop() {
   if (animPtrCopy == nullptr)
     strip.fill(0x00);
   else {
-    const byte* picPtr = animPtrCopy + picIdx * 40 * 3;
+    const auto picPtr = animPtrCopy + picIdx * 40 * 3;
     for (size_t pix = 0; pix < 40; ++pix) {
-      const byte* pixPtr = picPtr + 3 * pix;
+      const auto pixPtr = picPtr + 3 * pix;
       byte r, g, b;
       if (animPtrRegionCopy == ProgMem) {
         r = pgm_read_byte_near(pixPtr + 0);
