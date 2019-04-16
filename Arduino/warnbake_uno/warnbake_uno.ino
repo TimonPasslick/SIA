@@ -75,7 +75,7 @@ struct FlashReader {
 };
 
 void receiveEvent(int) {
-  if (Wire.available() > 0)
+  while (Wire.available() > 0)
   {
     switch (Wire.read())
     {
