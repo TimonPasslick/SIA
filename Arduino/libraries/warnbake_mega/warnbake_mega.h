@@ -40,19 +40,15 @@ void benutzerdefiniert() {
   sendeCodeNummer(0xFE);
 }
 byte passOnByte() {
-  /*
   auto theByte = Serial2.read();
   Wire.write(theByte);
   return theByte;
-  */
-  Wire.write(0xFF);
-  return 0xFF;
 }
 void benutzerdefiniertNeu() {
   sendeCodeNummer(0xFF);
   //leite Animationsdaten von App an Uno weiter
   Wire.beginTransmission(8);
-  size_t length = 240; //120 * size_t(passOnByte()) << 8 + passOnByte();
+  size_t length = 120 * size_t(passOnByte()) << 8 + passOnByte();
   for (size_t i = 0; i < length; ++i) {
     passOnByte();
   }
