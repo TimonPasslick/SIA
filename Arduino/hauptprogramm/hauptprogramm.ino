@@ -12,5 +12,6 @@ void setup() {
 void loop() {
   while (Serial2.available())
     menu::smartphoneSignal(Serial2.read());
+  Serial2.write(0x00); //Bedeutung: Neue Eingaben werden wieder sofort verarbeitet.
   //TODO: Knopf prüfen
 }
