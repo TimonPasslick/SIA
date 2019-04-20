@@ -25,10 +25,6 @@ switchTimeMs = 100;
 
 
 void _setup() {
-  motor    .attach(SERVO_MC_ONE_OUT);
-  frontAxis.attach(SERVO_TWO_OUT);
-
-  controllerSignalReceiver.init();
 }
 
 int channel(const uint8_t number) {
