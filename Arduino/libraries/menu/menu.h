@@ -4,10 +4,7 @@
 #include "fernsteuerung.h"
 #include "warnbake_mega.h"
 
-#include "LiquidCrystal.h"
-
-constexpr int rs = 31, en = 30, d4 = 29, d5 = 28, d6 = 27, d7 = 26;
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+#include "hardware.h"
 
 namespace menu {
 	

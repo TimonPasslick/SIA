@@ -1,18 +1,8 @@
-//Arduino
-#include <Servo.h>
-
-//third party
-#include "radio_receiver.h"
+#include "hardware.h"
 
 //siaLib
 #include "define.h" //#defines RADIO_RECEIVER_NULL_CH_n, 0 <= n <= 9
 #include "sia_board_io.h" //#defines pin names
-
-
-Servo motor;
-Servo frontAxis, rearAxis;
-
-radio_receiver controllerSignalReceiver;
 
 namespace fernsteuerung {
 

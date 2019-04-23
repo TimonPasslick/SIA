@@ -1,5 +1,7 @@
 #include "menu.h"
 
+#include "hardware.h"
+
 void setup() {
   Serial2.begin(9600);
   controllerSignalReceiver.init();
