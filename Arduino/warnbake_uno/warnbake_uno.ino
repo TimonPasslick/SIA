@@ -40,7 +40,7 @@ void switchToAnim(const byte (&anim)[N]) {
 
 template <typename T>
 void loadAnimFromReader(T&& reader) {
-  animLength = size_t(reader.nextByte()) << 8 + reader.nextByte();
+  animLength = reader.nextByte();
   size_t byteLength = animLength * 40 * 3;
   if (animLength == 0 || animLength > 10) {
     noAnim();

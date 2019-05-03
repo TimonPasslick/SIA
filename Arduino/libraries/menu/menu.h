@@ -204,7 +204,7 @@ namespace menu {
       case 21:
         _spazierenFahren();
         break;
-      case 0xFF:
+      case 255:
         warnbake::benutzerdefiniertNeu();
         break;
     }

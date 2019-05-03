@@ -6,7 +6,7 @@ blinkerLinks{
   4, //Pin
   NEO_GRB
 },
-blinkerRechts{3, 8, NEO_RGB};
+blinkerRechts{3, 8, NEO_GRB};
 
 #define BLINKER(methodenAufruf) blinkerLinks. methodenAufruf ; blinkerRechts. methodenAufruf ;
 
