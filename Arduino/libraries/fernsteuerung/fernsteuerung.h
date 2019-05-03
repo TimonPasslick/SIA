@@ -1,3 +1,6 @@
+#ifndef FERNSTEUERUNG_H
+#define FERNSTEUERUNG_H
+
 #include "hardware.h"
 
 //siaLib
@@ -95,3 +98,5 @@ bool _loop() {
   return true; //Abbruch im Moment nicht möglich
 }
 }
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef WAARNBAKE_MEGA_H
+#define WAARNBAKE_MEGA_H
+
 #include <Wire.h>
 
 namespace warnbake {
@@ -56,3 +59,5 @@ void benutzerdefiniertNeu() {
 }
 
 }
+
+#endif
