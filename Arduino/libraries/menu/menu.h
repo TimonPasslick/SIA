@@ -2,12 +2,14 @@
 #define MENU_H
 
 #include "fernsteuerung.h"
-#include "warnbake_mega.h"
-
 #include "hardware.h"
 
+#ifdef CAR2
+  #include "warnbake_mega.h"
+#endif
+
 namespace menu {
-	
+#ifdef CAR1
   typedef void(*Function)();
 
   struct MenuEntry {
@@ -30,7 +32,13 @@ namespace menu {
     delay(1500);
   }
   
-#define MOD_ENTER(mod) { lcd.clear(); mod::_setup(); while (mod::_loop()) { } }
+  #define MOD_ENTER(mod) { lcd.clear(); mod::_setup(); while (mod::_loop()) { } }
+#else
+  void fehlt() {
+  }
+  
+  #define MOD_ENTER(mod) {              mod::_setup(); while (mod::_loop()) { } }
+#endif
 
   /////////////////////////////////zu implementieren/////////////////////////////////
   void _fernsteuerung()        { MOD_ENTER(fernsteuerung) }
@@ -48,11 +56,11 @@ namespace menu {
   void _torkel()               { fehlt(); }
   //////////////////////////////////////bis hier//////////////////////////////////////
 
+#ifdef CAR1
   void enter();
   void enterSettings();
   void enterLenkung();
   void enterFahrfiguren();
-  void enterAnimation();
 
   //Großgeschrieben: Link auf Menü (bis auf Fahrfiguren, weil es verwirren würde)
   MenuEntry entries[] = {
@@ -65,21 +73,7 @@ namespace menu {
   };
   MenuEntry settings[] = {
     ent("BACK",      menu::enter),
-    ent("ANIMATION", enterAnimation),
     ent("LENKUNG",   enterLenkung)
-  };
-  MenuEntry animation[] = {
-    ent("BACK",         enterSettings),
-    ent("keine",        warnbake::aus),
-    ent("Wand",         warnbake::wand),
-    ent("Pfeil links",  warnbake::pfeilLinks),
-    ent("Pfeil rechts", warnbake::pfeilRechts),
-    ent("Blinker blau", warnbake::blinkerBlau),
-    ent("Blinker gelb", warnbake::blinkerGelb),
-    ent("Mann gruen",   warnbake::mannGruen),
-    ent("Mann rot",     warnbake::mannRot),
-    ent("Ampel",        warnbake::ampel),
-    ent("aus der App",  warnbake::benutzerdefiniert),
   };
   MenuEntry lenkung[] = {
     ent("BACK",         enterSettings),
@@ -132,10 +126,32 @@ namespace menu {
   void enterFahrfiguren() {
     switchToMenu(fahrfiguren);
   }
-  void enterAnimation() {
-    switchToMenu(animation);
+
+  void up() {
+    if (curIndex == 0) {
+      switchToEntry(curMenuSize - 1);
+    } else {
+      switchToEntry(curIndex - 1);
+    }
   }
-  
+
+  void down() {
+    const size_t nextIndex = curIndex + 1;
+    if (nextIndex == curMenuSize) {
+      switchToEntry(0);
+    } else {
+      switchToEntry(nextIndex);
+    }
+  }
+
+  void ok() {
+    lcd.clear();
+    curMenu[curIndex].onClick();
+    switchToEntry(curIndex);
+  }
+#endif
+
+#ifdef CAR2
   void smartphoneSignal(byte signal) {
     switch (signal) {
       case 0:
@@ -209,29 +225,7 @@ namespace menu {
         break;
     }
   }
-
-  void up() {
-    if (curIndex == 0) {
-      switchToEntry(curMenuSize - 1);
-    } else {
-      switchToEntry(curIndex - 1);
-    }
-  }
-
-  void down() {
-    const size_t nextIndex = curIndex + 1;
-    if (nextIndex == curMenuSize) {
-      switchToEntry(0);
-    } else {
-      switchToEntry(nextIndex);
-    }
-  }
-
-  void ok() {
-    lcd.clear();
-    curMenu[curIndex].onClick();
-    switchToEntry(curIndex);
-  }
+#endif
 }
 
 #endif //MENU_H

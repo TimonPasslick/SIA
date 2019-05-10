@@ -1,5 +1,9 @@
-#ifndef WAARNBAKE_MEGA_H
-#define WAARNBAKE_MEGA_H
+#ifndef WARNBAKE_MEGA_H
+#define WARNBAKE_MEGA_H
+
+#ifdef CAR1
+  #error Der Warnbaken-Header wurde eingebunden, obwohl das erste Auto verwendet wird, das keine Warnbake hat.
+#endif
 
 #include <Wire.h>
 
