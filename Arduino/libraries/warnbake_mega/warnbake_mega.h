@@ -39,9 +39,6 @@ void mannGruen() {
 void mannRot() {
   sendeCodeNummer(7);
 }
-void ampel() {
-  sendeCodeNummer(8);
-}
 
 void benutzerdefiniert() {
   sendeCodeNummer(0xFE);

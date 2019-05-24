@@ -42,9 +42,10 @@ namespace menu {
 
   /////////////////////////////////zu implementieren/////////////////////////////////
   void _fernsteuerung()        { MOD_ENTER(fernsteuerung) }
-  void _fahrfigur1()           { fehlt(); }
-  void _fahrfigur2()           { fehlt(); }
-  void _fahrfigur3()           { fehlt(); }
+  void _ellipse()              { fehlt(); }
+  void _acht()                 { fehlt(); }
+  void _wende()                { fehlt(); }
+  void alleFahrfiguren()       { _ellipse(); _acht(); _wende(); }
   void _sicherheitstraining()  { fehlt(); }
   void _spazierenFahren()      { fehlt(); }
   void _einparken()            { fehlt(); }
@@ -85,9 +86,10 @@ namespace menu {
   };
   MenuEntry fahrfiguren[] = {
     ent("BACK",    menu::enter),
-    ent("Ellipse", _fahrfigur1),
-    ent("Acht",    _fahrfigur2),
-    ent("Wende",   _fahrfigur3)
+    ent("alle",    alleFahrfiguren),
+    ent("Ellipse", _ellipse),
+    ent("Acht",    _acht),
+    ent("Wende",   _wende)
   };
 
   void switchToEntry(const size_t index) {
@@ -178,9 +180,6 @@ namespace menu {
       case 7:
         warnbake::mannRot();
         break;
-      case 8:
-        warnbake::ampel();
-        break;
       case 9:
         warnbake::benutzerdefiniert();
         break;
@@ -203,13 +202,13 @@ namespace menu {
         _einparken();
         break;
       case 16:
-        _fahrfigur1();
+        _ellipse();
         break;
       case 17:
-        _fahrfigur2();
+        _acht();
         break;
       case 18:
-        _fahrfigur3();
+        _wende();
         break;
       case 19:
         _fernsteuerung();
