@@ -1,10 +1,10 @@
-#define CAR2
+#define CAR1
 
-#include "menu.h"
-#include "controller.h"
+#include "hardware.h"
+#include "sia_board_io.h"
 
 namespace ellipse {
-  constexpr double totalMicros = 2.5 * 1000 * 1000;
+  constexpr double totalMicros = 7.5 * 1000 * 1000;
   int startMicros;
   void _setup() {
     startMicros = micros();
@@ -17,16 +17,23 @@ namespace ellipse {
     const double angleDegrees = 20 * sin(2 * PI * progress);
     frontAxis.write(90 + angleDegrees);
     rearAxis.write(90 - angleDegrees);
+    Serial.print("angleDegrees: ");
+    Serial.println(angleDegrees);
     return true;
   }
 }
 
 void setup() {
-  control::setupController();
-  control::reset();
-  motor.write(80);
+  motor    .attach(SERVO_MC_ONE_OUT);
+  frontAxis.attach(SERVO_ONE_OUT);
+  rearAxis .attach(SERVO_TWO_OUT);
+  
+  motor.write(78);  
+  ellipse::_setup();
+
+  Serial.begin(9600);
 }
 
 void loop() {
-  //MOD_ENTER(ellipse)
+  ellipse::_loop();
 }
