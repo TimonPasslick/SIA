@@ -5,6 +5,7 @@ use std::{
 };
 
 fn main() {
+    //Dateiname einlesen
     let filename: Vec<_> = env::args().skip(1).collect();
     if filename.len() != 1 {
         println!("Nur ein Argument erwartet: Der bmp-Dateiname");
@@ -12,11 +13,13 @@ fn main() {
     }
     let filename = filename.into_iter().next().unwrap();
 
+    //Bitmap-Datei öffnen
     let img = bmp::open(filename).unwrap_or_else(|error| {
         println!(".bmp-Datei konnte nicht geöffnet werden: {}", error);
         exit(0);
     });
 
+    //Bitmap auf Korrektheit prüfen
     if img.get_height() != 8 || img.get_width() % 6 != 5 {
         println!(
             "\
@@ -28,6 +31,7 @@ Die Farbe dieser Abstand-Pixel ist egal."
         exit(0);
     }
 
+    //Bitmap in Arduino-Bytes konvertieren
     let bytes: Vec<u8> = (0..=img.get_width() / 6)
         .flat_map(|state_index| {
             (state_index * 6..state_index * 6 + 5).rev()
@@ -41,7 +45,8 @@ Die Farbe dieser Abstand-Pixel ist egal."
                 })
         })
         .collect();
-
+    
+    //Arduino-Bytes als Array-Initialisierer ausgeben
     print!("{{");
     for (i, rgb) in bytes.iter().enumerate() {
         print!("{:#04X}", rgb);

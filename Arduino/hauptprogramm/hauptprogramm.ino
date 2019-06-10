@@ -2,12 +2,13 @@
 
 #include "menu.h"
 
+//Initialisiere die Hardware.
 void setup() {
   controllerSignalReceiver.init();
   motor    .attach(SERVO_MC_ONE_OUT);
   frontAxis.attach(SERVO_ONE_OUT);
   rearAxis .attach(SERVO_TWO_OUT);
-
+  
   #ifdef CAR1
     lcd.begin(16, 2);
     for (const int pin : buttonPins)
@@ -22,6 +23,7 @@ void setup() {
 }
 
 void loop() {
+  //Falls das das zweite Auto ist, fange Bluetooth-Signale vom Smartphone ab und verarbeite sie mit menu::smartphoneSignal.
   #ifdef CAR2
     if (Serial2.available()) {
       Serial2.write('b'); //Bedeutung: Neue Eingaben werden mit 40 Byte gepuffert und nicht sofort verarbeitet. ("busy")
@@ -31,6 +33,7 @@ void loop() {
     }
   #endif
 
+  //Falls das das erste Auto ist, fange neue Knopfdrücke ab und verarbeite sie mit menu::ok, menu::down und menu::up.
   #ifdef CAR1
     static bool buttonsPressed[3] {false, false, false};
   

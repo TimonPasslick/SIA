@@ -20,6 +20,7 @@ switchTimeMs = 100;
 void _setup() {
 }
 
+//Gibt das Signal aus einem Fernsteuerungs-Kanal zurück.
 int channel(const uint8_t number) {
   constexpr int nullChannels[10] {
     RADIO_RECEIVER_NULL_CH_0,
@@ -37,6 +38,7 @@ int channel(const uint8_t number) {
   return controllerSignalReceiver.AverageChannel(number) - nullChannels[number];
 }
 
+//skaliert ein Signal auf einen neuen Maximalwert und sorgt dafür, dass er wirklich nicht überschritten wird
 int limitChannel(const uint8_t number, const int maxAllowed) {
   return min(
            maxAllowed,

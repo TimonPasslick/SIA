@@ -9,20 +9,24 @@
 #endif
 
 namespace menu {
+//bis zum #else alles nur für das erste Auto
 #ifdef CAR1
   typedef void(*Function)();
 
+  //Ein Menü-Eintrag hat einen Namen und eine Funktion, die ausgeführt wird, sobald der Nutzer den Eintrag anklickt.
   struct MenuEntry {
     String name;
     Function onClick;
   };
 
+  //das aktuelle Menü und der aktuelle Eintrag
   MenuEntry* curMenu; size_t curMenuSize;
   size_t curIndex;
 
   //Abkürzung
   MenuEntry ent(String name, Function onClick) { return MenuEntry{name, onClick}; }
 
+  //gebe 1,5 Sekunden eine Fehlermeldung aus, dass die Funktion noch fehlt
   void fehlt() {
     lcd.clear();
     lcd.setCursor(0,0);
@@ -32,11 +36,16 @@ namespace menu {
     delay(1500);
   }
   
+  //Makro, um ein Unterprogramm auszuführen, gibt den Bildschirm frei
   #define MOD_ENTER(mod) { lcd.clear(); mod::_setup(); while (mod::_loop()) { } }
+
+//bis zum #endif alles für das zweite Auto
 #else
+  //bisher keine Fehlermeldung
   void fehlt() {
   }
   
+  //Makro, um ein Unterprogramm auszuführen
   #define MOD_ENTER(mod) {              mod::_setup(); while (mod::_loop()) { } }
 #endif
 
@@ -57,6 +66,7 @@ namespace menu {
   void _torkel()               { fehlt(); }
   //////////////////////////////////////bis hier//////////////////////////////////////
 
+//bis zum #endif alles für das erste Auto
 #ifdef CAR1
   void enter();
   void enterSettings();
@@ -64,7 +74,7 @@ namespace menu {
   void enterFahrfiguren();
 
   //Großgeschrieben: Link auf Menü (bis auf Fahrfiguren, weil es verwirren würde)
-  MenuEntry entries[] = {
+  MenuEntry entries[] = { //Hauptmenü-Einträge
     ent("SETTINGS",         enterSettings),
     ent("Einparken",        _einparken),
     ent("Fahrfiguren",      enterFahrfiguren),
@@ -92,6 +102,7 @@ namespace menu {
     ent("Wende",   _wende)
   };
 
+  //zu N-ten Menü-Eintrag wechseln
   void switchToEntry(const size_t index) {
     lcd.clear();
     lcd.setCursor(0,0);
@@ -109,6 +120,7 @@ namespace menu {
     curIndex = index;
   }
 
+  //zu einem bestimmten Menü wechseln, z.B. Hauptmenü oder Einstellungen
   template <size_t N>
   void switchToMenu(MenuEntry (&menu)[N]) {
     curMenu = menu;
@@ -116,19 +128,24 @@ namespace menu {
     switchToEntry(0);
   }
 
+  //zu Hauptmenü wechseln
   void enter() {
     switchToMenu(menu::entries);
   }
+  //zu Einstellungen wechseln
   void enterSettings() {
     switchToMenu(settings);
   }
+  //zu Lenkungseinstellungen wechseln
   void enterLenkung() {
     switchToMenu(lenkung);
   }
+  //zur Fahrfiguren-Auswahl wechseln
   void enterFahrfiguren() {
     switchToMenu(fahrfiguren);
   }
 
+  //einen Eintrag weiter hoch wechseln
   void up() {
     if (curIndex == 0) {
       switchToEntry(curMenuSize - 1);
@@ -137,6 +154,7 @@ namespace menu {
     }
   }
 
+  //einen Eintrag weiter runter wechseln
   void down() {
     const size_t nextIndex = curIndex + 1;
     if (nextIndex == curMenuSize) {
@@ -146,6 +164,7 @@ namespace menu {
     }
   }
 
+  //aktuellen Menü-Eintrag auswählen
   void ok() {
     lcd.clear();
     curMenu[curIndex].onClick();
@@ -154,6 +173,7 @@ namespace menu {
 #endif
 
 #ifdef CAR2
+  //für das zweite Auto; je nach Byte-Wert unterschiedliche Funktionen ausführen
   void smartphoneSignal(byte signal) {
     switch (signal) {
       case 0:

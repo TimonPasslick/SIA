@@ -9,6 +9,7 @@
 
 namespace warnbake {
 
+//sendet ein Byte zum Arduino Uno.
 void sendeCodeNummer(const byte nummer) {
   Wire.beginTransmission(8); //Uno sollte auf Slave-Adresse 0 liegen.
   Wire.write(nummer);
@@ -43,13 +44,15 @@ void mannRot() {
 void benutzerdefiniert() {
   sendeCodeNummer(0xFE);
 }
+//sendet ein Byte vom Smartphone an den Arduino Uno weiter
 byte passOnByte() {
   const auto theByte = Serial2.read();
   Wire.write(theByte);
   return theByte;
 }
+
+//leite Animationsdaten von App an Uno weiter
 void benutzerdefiniertNeu() {
-  //leite Animationsdaten von App an Uno weiter
   Wire.beginTransmission(8);
   Wire.write(0xFF);
   const size_t length = 120 * size_t(passOnByte()) << 8 + passOnByte();
